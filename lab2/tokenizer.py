@@ -5,6 +5,7 @@ Usage: python tokenizer.py < corpus.txt
 __author__ = "Pierre Nugues"
 
 import sys
+import itertools
 import regex as re
 """from lab2 import count"""
 text = """Tell me, O muse, of that ingenious hero who
@@ -50,39 +51,69 @@ def tokenize4(text):
     spaced_tokens = re.sub('([\p{S}\p{P}])', r' \1 ', text)
     one_token_per_line = re.sub('\s+', '\n', spaced_tokens)
     tokens = one_token_per_line.split()
+    i = 0
     return tokens
+
+def count_unigrams(words):
+    freq = {}
+    for word in words.split():
+        try:
+            freq[word.lower()] +=1
+        except:
+            freq[word.lower()] = 1
+    return freq
+
+def count_bigrams(text):
+    """word_pair = zip(text,text[1:])"""
+    word_pairs = {}
+    words = text.split()
+    bigrams = {}
+    for idx, word in enumerate(words):
+        if idx+1 <len(words):
+            try:
+                bigrams[(word,words[idx+1])] += 1
+            except:
+                bigrams[(word, words[idx + 1])] = 1
+    return bigrams
+
+
 
 
 if __name__ == '__main__':
-    """text = sys.stdin.read()"""
     text = open("Selma.txt").read()
-    """words = tokenize(text)
-    for word in words:
-        print(word)
-    words = tokenize2(text)
-    """
-    words = tokenize3(text)
+    words = tokenize4(text)
     newText = ""
-    i = 0
-    for word in words:
-        newText += word+ " "
-    sentence = ""
-    hit = 0
-    c = re.compile('[A-Z](\p{L}|,|\s)*.')
-    for sentencee in c.finditer(newText):
-        sentence +="<s> "+ sentencee.group().lower()+" </s> "
+    text2 = ""
+    c = re.compile('[A-ZÅÀÂÄÆÇÉÈÊËÎÏÔÖŒÙÛÜŸ][^\.]*')
+    for sentence in c.finditer(text):
+        print(sentence)
+        sentence = re.sub(r'\p{P}+','',sentence.group())
+        text2 +="<s> "+ sentence.lower()+" </s> "
+    unigrams = count_unigrams(text2)
+    bigrams = count_bigrams(text2)
     p = re.compile(r"\p{L}+")
-    print(len(p.findall(re.sub('\p{P}',"",sentence))))
-    for word in words:
-        if(hit == 0 and re.search('[A-Z]',word) != None):
-            hit=1
-            sentence +="<s> "+word
-        elif hit == 1:
-            sentence += " " +word
-            if(word == '.'):
-                newText+=re.sub('\p{P}','',sentence[:-2].lower())+" </s> "
-                sentence= ""
-                hit =0
-"""    print(newText)"""
-"""print(len(p.findall(newText)))"""
-"""print(count.count_unigrams(count.tokenize(text)))"""
+    nbrOfWords = len(p.findall(re.sub('\p{P}',"",text2)))
+    print("nbr of words: "+ str(nbrOfWords))
+    nbrOfWords2 = 0
+    for nbr in unigrams.values():
+        nbrOfWords2 +=nbr
+    print("nbrofwords2: "+str(nbrOfWords2))
+
+    sentence = "<s> det var en gång en katt som hette nils </s>"
+    uniProb = 0
+    words = sentence.split()
+    for word in re.finditer(r'\p{L}+|<s>|</s>',sentence):
+        print(word.group() + ":\t" +str(unigrams[word.group()])+"\t"+ str(unigrams[word.group()]/nbrOfWords))
+
+    print()
+    total_prob = 1
+    for idx, word in enumerate(words):
+        if idx + 1 < len(words):
+            try:
+                bi_prob = (bigrams[(word,words[idx+1])])/(unigrams[word])
+                print(word+","+words[idx+1] + "\t" + str(bigrams[(word,words[idx+1])]) +"\t"+ str(unigrams[word]) + "\t"+ str(bi_prob))
+                total_prob *= bi_prob
+            except:
+                print(word + "," + words[idx + 1] + "\t" +"0" + "\t" + str(unigrams[word])+"\t"+str(unigrams[words[idx+1]]/nbrOfWords))
+                total_prob *= unigrams[words[idx+1]]/nbrOfWords
+    print("bigram prob: " + str(total_prob))
