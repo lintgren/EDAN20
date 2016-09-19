@@ -6,6 +6,7 @@ __author__ = "Pierre Nugues"
 
 import sys
 import itertools
+import math
 import regex as re
 """from lab2 import count"""
 text = """Tell me, O muse, of that ingenious hero who
@@ -84,10 +85,10 @@ if __name__ == '__main__':
     words = tokenize4(text)
     newText = ""
     text2 = ""
-    c = re.compile('[A-ZÅÀÂÄÆÇÉÈÊËÎÏÔÖŒÙÛÜŸ][^\.]*')
+    c = re.compile('\p{Lu}[^\.]*')
     for sentence in c.finditer(text):
-        print(sentence)
         sentence = re.sub(r'\p{P}+','',sentence.group())
+        sentence = re.sub(r'\n','',sentence)
         text2 +="<s> "+ sentence.lower()+" </s> "
     unigrams = count_unigrams(text2)
     bigrams = count_bigrams(text2)
@@ -102,8 +103,15 @@ if __name__ == '__main__':
     sentence = "<s> det var en gång en katt som hette nils </s>"
     uniProb = 0
     words = sentence.split()
+    total_prob = 1
     for word in re.finditer(r'\p{L}+|<s>|</s>',sentence):
         print(word.group() + ":\t" +str(unigrams[word.group()])+"\t"+ str(unigrams[word.group()]/nbrOfWords))
+        total_prob *= unigrams[word.group()]/nbrOfWords
+    print("unigram prob: " + str(total_prob))
+    entropy = (-math.log(total_prob)) / 10
+    print("Entropy: " + str(entropy))
+    print("perplexity: " + str(math.pow(2, entropy)))
+
 
     print()
     total_prob = 1
@@ -116,4 +124,8 @@ if __name__ == '__main__':
             except:
                 print(word + "," + words[idx + 1] + "\t" +"0" + "\t" + str(unigrams[word])+"\t"+str(unigrams[words[idx+1]]/nbrOfWords))
                 total_prob *= unigrams[words[idx+1]]/nbrOfWords
+
     print("bigram prob: " + str(total_prob))
+    entropy = (-math.log(total_prob))/10
+    print("Entropy: " + str(entropy))
+    print("perplexity: " + str(math.pow(2,entropy)))

@@ -20,7 +20,7 @@ def index(text,filename):
             tmplist[filename] = [m.start()]
             dictionary[(m.group())] = tmplist
         else:
-            tmplist =dictionary[m.group()][filename]
+            tmplist = dictionary[m.group()][filename]
             tmplist.append(m.start())
             dictionary[m.group()][filename] = tmplist
 
@@ -84,6 +84,7 @@ for filname in filenames:
     for filname2 in filenames:
         values += str(cosCompare(tfIdf[filname],tfIdf[filname2])) + " "
     print(filname+ values)
+print(dictionary["nils"]["kejsaren"])
 
 
 pickle.dump(dictionary,open("indexer.idx","wb"))
