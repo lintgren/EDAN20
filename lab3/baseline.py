@@ -38,13 +38,13 @@ def train(corpus):
     """
     Fill in code to compute the chunk distribution for each part of speech
     """
-    for pos in corpus:
-        for pos2 in pos:
+    for sentence in corpus:
+        for word in sentence:
             try:
-                chunk_dist[pos2['pos']][pos2['chunk']] += 1
+                chunk_dist[word['pos']][word['chunk']] += 1
             except:
-                chunk_dist[pos2['pos']] == {}
-                chunk_dist[pos2['pos']][pos2['chunk']] = 1
+                chunk_dist[word['pos']] == {}
+                chunk_dist[word['pos']][word['chunk']] = 1
     # We determine the best association
     pos_chunk = {}
     for key, value in chunk_dist.items():
