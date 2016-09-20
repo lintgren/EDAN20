@@ -2,12 +2,10 @@
 Baseline chunker for CoNLL 2000
 """
 __author__ = "Pierre Nugues"
-from operator import attrgetter
 
-import conll_reader
 import operator
-
-
+import conll_reader
+from sklearn import metrics
 def count_pos(corpus):
     """
     Computes the part-of-speech distribution

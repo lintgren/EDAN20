@@ -35,3 +35,5 @@ key1 = ["ord","ord2"]
 key2 = ["ord3","ord4"]
 k = (key1,key2)
 print(k)
+for i in range(2):
+    print(i)
