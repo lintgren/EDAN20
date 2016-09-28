@@ -75,7 +75,7 @@ def extract_features_sent(sentence, w_size, feature_names):
             x.append(padded_sentence[i + j][1])
         #adding chunk
         for j in range(2):
-            x.append(padded_sentence[i - j +1][2])
+            x.append(padded_sentence[i - j + 1][2])
         # The chunks (Up to the word)
         """
         for j in range(w_size):

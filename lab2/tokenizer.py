@@ -66,7 +66,6 @@ def count_unigrams(words):
 
 def count_bigrams(text):
     """word_pair = zip(text,text[1:])"""
-    word_pairs = {}
     words = text.split()
     bigrams = {}
     for idx, word in enumerate(words):
