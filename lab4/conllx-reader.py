@@ -82,7 +82,7 @@ def verb_subject_freq(corpus):
     count = 0
     for sentence in corpus:
         for word in sentence:
-            if(word['deprel'] == 'ss'):
+            if(word['deprel'] == 'SS'):
                 try:
                     freq[((sentence[int(word['head'])])['form'].lower(),word['form'].lower())] += 1
                 except:

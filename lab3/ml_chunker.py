@@ -43,7 +43,6 @@ def extract_features_sent(sentence, w_size, feature_names):
     :param w_size:
     :return:
     """
-    # We pad the sentence to extract the context window more easily
     start = "BOS BOS BOS\n"
     end = "\nEOS EOS EOS"
     start *= w_size
@@ -57,7 +56,6 @@ def extract_features_sent(sentence, w_size, feature_names):
     for line in sentence:
         line = line.split()
         padded_sentence.append(line)
-    # print(padded_sentence)
 
     # We extract the features and the classes
     # X contains is a list of features, where each feature vector is a dictionary
@@ -174,6 +172,7 @@ if __name__ == '__main__':
 
     print("Extracting the features...")
     X_dict, y_symbols = extract_features(train_sentences, w_size, feature_names)
+    print(X_dict)
     print("Encoding the features and classes...")
     # Vectorize the feature matrix and carry out a one-hot encoding
     vec = DictVectorizer(sparse=True)
@@ -199,6 +198,7 @@ if __name__ == '__main__':
     # Here we carry out a chunk tag prediction and we report the per tag error
     # This is done for the whole corpus without regard for the sentence structure
     print("Predicting the chunks in the test set...")
+    print(test_sentences)
     X_test_dict, y_test_symbols = extract_features(test_sentences, w_size, feature_names)
     # Vectorize the test set and one-hot encoding
     X_test = vec.transform(X_test_dict)  # Possible to add: .toarray()
